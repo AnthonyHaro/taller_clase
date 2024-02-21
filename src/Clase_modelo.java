@@ -138,12 +138,12 @@ public class Clase_modelo extends JFrame {
 
    private void mostrarInformacion_tabla() {
         try (Connection conexion = establecerConexion();
-             PreparedStatement statement = conexion.prepareStatement("SELECT cedula, nombre, apellido, imagen , Dirección , Telefono , Edad ,fecha FROM usuarios");
+             PreparedStatement statement = conexion.prepareStatement("SELECT cedula, nombre, apellido, imagen , Dirección , Telefono , Edad  FROM usuarios");
              ResultSet resultSet = statement.executeQuery()) {
 
             // Crear el modelo de tabla con los nombres de las columnas
             DefaultTableModel tableModel = new DefaultTableModel(
-                    new String[]{"Cedula", "Nombre", "Apellido", "Imagen", "Dirección", "Telefono", "Edad", "fecha"}, 0);
+                    new String[]{"Cedula", "Nombre", "Apellido", "Imagen", "Dirección", "Telefono", "Edad" ,"fecha"}, 0);
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("cedula");
@@ -152,6 +152,7 @@ public class Clase_modelo extends JFrame {
                 byte[] imageData = resultSet.getBytes("imagen");
                 String Direccion = resultSet.getString("Dirección");
                 int telefono= resultSet.getInt("Telefono");
+                int edad= resultSet.getInt("Edad");
                 // Verificar si imageData es nulo
                 ImageIcon imageIcon = null;
                 if (imageData != null) {
@@ -163,7 +164,7 @@ public class Clase_modelo extends JFrame {
                 }
 
                 // Agregar fila al modelo de tabla
-                tableModel.addRow(new Object[]{id, nombre, apellido, imageIcon});
+                tableModel.addRow(new Object[]{id, nombre, apellido, imageIcon, Direccion, telefono, edad});
             }
 
             // Crear la tabla con el modelo de datos
@@ -259,12 +260,14 @@ public class Clase_modelo extends JFrame {
         PreparedStatement statement = null;
         try {
             conexion = DriverManager.getConnection(URL, USUARIO, CONTRASENA);
-            statement = conexion.prepareStatement("INSERT INTO usuarios (cedula,nombre, apellido, imagen) VALUES (?,?, ?, ?)");
+            statement = conexion.prepareStatement("INSERT INTO usuarios (cedula,nombre, apellido, imagen, Dirección , Telefono , Edad) VALUES (?,?, ?, ?,?, ?, ?)");
             statement.setString(1, txtCedula.getText());
             statement.setString(2, txtNombre.getText());
             statement.setString(3, txtApellido.getText());
             statement.setBytes(4, imageData);
-
+            statement.setString(5, diretxt.getText());
+            statement.setString(6,teletxt.getText());
+            statement.setString(7,edadtext.getText());
             statement.executeUpdate();
         } finally {
             if (statement != null) {
