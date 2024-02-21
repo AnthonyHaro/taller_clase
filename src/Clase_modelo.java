@@ -137,7 +137,7 @@ public class Clase_modelo extends JFrame {
 
             // Crear el modelo de tabla con los nombres de las columnas
             DefaultTableModel tableModel = new DefaultTableModel(
-                    new String[]{"Cedula", "Nombre", "Apellido", "Imagen", "Dirección", "Telefono", "Edad" ,"fecha"}, 0);
+                    new String[]{"Cedula", "Nombre", "Apellido", "Imagen", "Dirección", "Telefono", "Edad"}, 0);
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("cedula");
