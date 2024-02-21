@@ -248,7 +248,6 @@ public class Clase_modelo extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al actualizar datos en la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
     private void guardarImagen(byte[] imageData) throws SQLException {
         Connection conexion = null;
         PreparedStatement statement = null;

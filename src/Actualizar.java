@@ -4,13 +4,14 @@ import java.awt.event.ActionListener;
 
 public class Actualizar {
     public JPanel ActD;
-    private JTextField textField1;
-    private JTextField textField2;
-    private JTextField textField3;
-    private JTextField textField4;
-    private JTextField textField5;
+    private JTextField txtNombre;
+    private JTextField txtApellido;
+    private JTextField txtCedula;
+    private JTextField diretxt;
+    private JTextField edadtext;
     private JButton ACTUALIZARButton;
     private JButton REGRESARButton;
+    private JTextField teletxt;
 
     public Actualizar() {
         ACTUALIZARButton.addActionListener(new ActionListener() {
