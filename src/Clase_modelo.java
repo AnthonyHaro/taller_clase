@@ -20,8 +20,8 @@ public class Clase_modelo extends JFrame {
     private JTextField diretxt;
     private JTextField teletxt;
     private JTextField edadtext;
-    private JTextField buscartextField;
     public JButton buscarButton;
+    public  Boolean encon=false;
     private static final String URL = "jdbc:mysql://uwbtoxzn5u0iisji:IYihO7vjhCbhmAcYPN5I@bvditkfe61woksb136yw-mysql.services.clever-cloud.com:3306/bvditkfe61woksb136yw";
     private static final String USUARIO = "uwbtoxzn5u0iisji";
     private static final String CONTRASENA = "IYihO7vjhCbhmAcYPN5I";
@@ -79,21 +79,25 @@ public class Clase_modelo extends JFrame {
         btnActualizar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame frames = (JFrame) SwingUtilities.getWindowAncestor(btnActualizar);
-                frames.dispose();
-                JFrame frame = new JFrame("Informacion Personas");
-                frame.setContentPane(new Actualizar().ActD);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(400, 700);
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
+                if (encon==true){
+                    JFrame frames = (JFrame) SwingUtilities.getWindowAncestor(btnActualizar);
+                    frames.dispose();
+                    JFrame frame = new JFrame("Informacion Personas");
+                    frame.setContentPane(new Actualizar().ActD);
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frame.setSize(400, 700);
+                    frame.setLocationRelativeTo(null);
+                    frame.setVisible(true);
+                }
             }
         });
 
         btnEliminar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                eliminarRegistro();
+                if (encon==true){
+                    eliminarRegistro();
+                }
             }
         });
         buscarImagenButton.addActionListener(new ActionListener() {
@@ -104,6 +108,29 @@ public class Clase_modelo extends JFrame {
 
                 // Llamar al método mostrarImagenPorId con el ID del usuario
                 mostrarImagenPorId();
+            }
+        });
+        buscarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int idUsuario = Integer.parseInt(txtId.getText());
+                try (Connection conexion = establecerConexion();
+                     PreparedStatement statement = conexion.prepareStatement("SELECT imagen FROM usuarios WHERE id = ?");
+                ) {
+
+                    statement.setInt(1, idUsuario);
+                    ResultSet resultSet = statement.executeQuery();
+
+                    if (resultSet.next()) {
+                        encon=true;
+                        JOptionPane.showMessageDialog(null, "usuario encontrado.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No se encontró ningún usuario con el ID proporcionado.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error al obtener la imagen de la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
@@ -133,12 +160,12 @@ public class Clase_modelo extends JFrame {
 
    private void mostrarInformacion_tabla() {
         try (Connection conexion = establecerConexion();
-             PreparedStatement statement = conexion.prepareStatement("SELECT cedula, nombre, apellido, imagen , Dirección , Telefono , Edad  FROM usuarios");
+             PreparedStatement statement = conexion.prepareStatement("SELECT cedula, nombre, apellido, imagen , Dirección , Telefono , Edad, fecha  FROM usuarios");
              ResultSet resultSet = statement.executeQuery()) {
 
             // Crear el modelo de tabla con los nombres de las columnas
             DefaultTableModel tableModel = new DefaultTableModel(
-                    new String[]{"Cedula", "Nombre", "Apellido", "Imagen", "Dirección", "Telefono", "Edad"}, 0);
+                    new String[]{"Cedula", "Nombre", "Apellido", "Imagen", "Dirección", "Telefono", "Edad", "Fecha"}, 0);
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("cedula");
@@ -148,6 +175,7 @@ public class Clase_modelo extends JFrame {
                 String Direccion = resultSet.getString("Dirección");
                 int telefono= resultSet.getInt("Telefono");
                 int edad= resultSet.getInt("Edad");
+                Date fecha = resultSet.getDate("Fecha");
                 // Verificar si imageData es nulo
                 ImageIcon imageIcon = null;
                 if (imageData != null) {
@@ -159,7 +187,7 @@ public class Clase_modelo extends JFrame {
                 }
 
                 // Agregar fila al modelo de tabla
-                tableModel.addRow(new Object[]{id, nombre, apellido, imageIcon, Direccion, telefono, edad});
+                tableModel.addRow(new Object[]{id, nombre, apellido, imageIcon, Direccion, telefono, edad, fecha});
             }
 
             // Crear la tabla con el modelo de datos
