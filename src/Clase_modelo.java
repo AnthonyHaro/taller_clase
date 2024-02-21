@@ -14,7 +14,6 @@ public class Clase_modelo extends JFrame {
     private JButton btnEliminar;
     private JPanel Jpanel1;
     private JButton subir_fotoButton;
-    private JButton mostrarImagenButton;
     private JButton buscarImagenButton;
     private JLabel JLabel_Imagen;
     private JTextField txtCedula;
@@ -42,9 +41,10 @@ public class Clase_modelo extends JFrame {
                         FileInputStream fis = new FileInputStream(selectedFile);
                         byte[] imageData = fis.readAllBytes();
                         fis.close();
-
-                        // Mostrar un diálogo de confirmación
-                        int option = JOptionPane.showConfirmDialog(null, "¿Desea guardar esta imagen?", "Confirmar", JOptionPane.YES_NO_OPTION);
+                        ImageIcon imageIcon = new ImageIcon(imageData);
+                        // Mostrar la imagen en un JLabel o en otro componente
+                        JLabel labelImagen = new JLabel(imageIcon);
+                        int option = JOptionPane.showConfirmDialog(null,labelImagen ,"¿Desea guardar esta imagen?",  JOptionPane.YES_NO_OPTION);
                         if (option == JOptionPane.YES_OPTION) {
                             // Guardar la imagen en la base de datos
                             guardarImagen(imageData);
@@ -52,6 +52,9 @@ public class Clase_modelo extends JFrame {
                             txtCedula.setText(" ");
                             txtNombre.setText(" ");
                             txtApellido.setText(" ");
+                            diretxt.setText(" ");
+                            teletxt.setText(" ");
+                            edadtext.setText(" ");
                         } else {
                             JOptionPane.showMessageDialog(null, "Imagen no guardada");
                         }
@@ -83,12 +86,6 @@ public class Clase_modelo extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 eliminarRegistro();
-            }
-        });
-        mostrarImagenButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mostrarImagen();
             }
         });
         buscarImagenButton.addActionListener(new ActionListener() {
@@ -128,19 +125,20 @@ public class Clase_modelo extends JFrame {
 
    private void mostrarInformacion_tabla() {
         try (Connection conexion = establecerConexion();
-             PreparedStatement statement = conexion.prepareStatement("SELECT cedula, nombre, apellido, imagen FROM usuarios");
+             PreparedStatement statement = conexion.prepareStatement("SELECT cedula, nombre, apellido, imagen , Dirección , Telefono , Edad ,fecha FROM usuarios");
              ResultSet resultSet = statement.executeQuery()) {
 
             // Crear el modelo de tabla con los nombres de las columnas
             DefaultTableModel tableModel = new DefaultTableModel(
-                    new String[]{"Cedula", "Nombre", "Apellido", "Imagen"}, 0);
+                    new String[]{"Cedula", "Nombre", "Apellido", "Imagen", "Dirección", "Telefono", "Edad", "fecha"}, 0);
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("cedula");
                 String nombre = resultSet.getString("nombre");
                 String apellido = resultSet.getString("apellido");
                 byte[] imageData = resultSet.getBytes("imagen");
-
+                String Direccion = resultSet.getString("Dirección");
+                int telefono= resultSet.getInt("Telefono");
                 // Verificar si imageData es nulo
                 ImageIcon imageIcon = null;
                 if (imageData != null) {
@@ -175,36 +173,6 @@ public class Clase_modelo extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al obtener información de la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-
-
-    private void mostrarImagen() {
-        JFileChooser fileChooser = new JFileChooser();
-        int resultado = fileChooser.showOpenDialog(this);
-        if (resultado == JFileChooser.APPROVE_OPTION) {
-            File archivoImagen = fileChooser.getSelectedFile();
-            try {
-                // Leer la imagen como un arreglo de bytes
-                FileInputStream fis = new FileInputStream(archivoImagen);
-                byte[] imageData = new byte[(int) archivoImagen.length()];
-                fis.read(imageData);
-                fis.close();
-
-                // Crear un ImageIcon a partir de los datos de la imagen
-                ImageIcon imageIcon = new ImageIcon(imageData);
-
-                // Mostrar la imagen en un JLabel o en otro componente
-                JLabel labelImagen = new JLabel(imageIcon);
-                JOptionPane.showMessageDialog(this, labelImagen, "Imagen Seleccionada", JOptionPane.PLAIN_MESSAGE);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error al leer la imagen: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-
-
     private void mostrarImagenPorId() {
         // Obtener el ID del usuario desde el campo de texto txtId
         int idUsuario = Integer.parseInt(txtId.getText());
