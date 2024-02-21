@@ -20,6 +20,8 @@ public class Clase_modelo extends JFrame {
     private JTextField diretxt;
     private JTextField teletxt;
     private JTextField edadtext;
+    private JTextField buscartextField;
+    private JButton buscarButton;
 
     private static final String URL = "jdbc:mysql://uwbtoxzn5u0iisji:IYihO7vjhCbhmAcYPN5I@bvditkfe61woksb136yw-mysql.services.clever-cloud.com:3306/bvditkfe61woksb136yw";
     private static final String USUARIO = "uwbtoxzn5u0iisji";
@@ -98,11 +100,22 @@ public class Clase_modelo extends JFrame {
                 mostrarImagenPorId();
             }
         });
+        buscarButton.addActionListener(new ActionListener() {
+            static JFrame ventana = new JFrame("Gestion de Proyectos");
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                ventana.setContentPane(new infoEstudiante().infoJPanel);
+                ventana.pack();
+                //ventana.setSize(1000, 800);
+                ventana.setVisible(true);
+            }
+        });
     }
 
     public void iniciar() {
         setLocationRelativeTo(null);
-        setSize(500, 400);
+        setSize(840, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
