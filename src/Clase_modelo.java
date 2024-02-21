@@ -12,7 +12,7 @@ public class Clase_modelo extends JFrame {
     private JButton btnMostrar;
     private JButton btnActualizar;
     private JButton btnEliminar;
-    private JPanel Jpanel1;
+    public JPanel Jpanel1;
     private JButton subir_fotoButton;
     private JButton buscarImagenButton;
     private JLabel JLabel_Imagen;
@@ -20,8 +20,6 @@ public class Clase_modelo extends JFrame {
     private JTextField diretxt;
     private JTextField teletxt;
     private JTextField edadtext;
-    private JTextField buscartextField;
-    private JButton buscarButton;
 
     private static final String URL = "jdbc:mysql://uwbtoxzn5u0iisji:IYihO7vjhCbhmAcYPN5I@bvditkfe61woksb136yw-mysql.services.clever-cloud.com:3306/bvditkfe61woksb136yw";
     private static final String USUARIO = "uwbtoxzn5u0iisji";
@@ -80,7 +78,14 @@ public class Clase_modelo extends JFrame {
         btnActualizar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                actualizarDatos();
+                JFrame frames = (JFrame) SwingUtilities.getWindowAncestor(btnActualizar);
+                frames.dispose();
+                JFrame frame = new JFrame("Informacion Personas");
+                frame.setContentPane(new Actualizar().ActD);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setSize(400, 700);
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
             }
         });
 
@@ -100,22 +105,11 @@ public class Clase_modelo extends JFrame {
                 mostrarImagenPorId();
             }
         });
-        buscarButton.addActionListener(new ActionListener() {
-            static JFrame ventana = new JFrame("Gestion de Proyectos");
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                ventana.setContentPane(new infoEstudiante().infoJPanel);
-                ventana.pack();
-                //ventana.setSize(1000, 800);
-                ventana.setVisible(true);
-            }
-        });
     }
 
     public void iniciar() {
         setLocationRelativeTo(null);
-        setSize(840, 700);
+        setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
